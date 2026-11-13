@@ -205,7 +205,7 @@ def _print_task_status(cfg: Config) -> None:
 
 def cmd_install_task(cfg: Config, *, interval: int, task_name: str | None, run_now: bool,
                      include_source_root: bool) -> int:
-    from .scheduler import SchedulerError, install_task
+    from .scheduler import SchedulerError, default_task_name, install_task
 
     ensure_protected(cfg.data_dir, cfg.state_dir)
     _setup_logging(cfg)
@@ -230,7 +230,12 @@ def cmd_install_task(cfg: Config, *, interval: int, task_name: str | None, run_n
     if result.started:
         print("A primeira execução começou agora, em segundo plano. "
               "Acompanhe com 'office-chat-keeper status'.")
-    print("Para desligar: office-chat-keeper uninstall-task")
+    # Quando o nome não é o padrão, a dica de desligamento precisa lembrar o nome
+    # usado, senão o usuário remove a tarefa errada.
+    uninstall_hint = "office-chat-keeper uninstall-task"
+    if result.task_name != default_task_name():
+        uninstall_hint += f" --task-name {result.task_name}"
+    print(f"Para desligar: {uninstall_hint}")
     log.info("tarefa agendada instalada: nome=%s intervalo=%d logon=%s sem_janela=%s",
              result.task_name, result.interval_minutes, result.logon_trigger, result.windowless)
     return 0

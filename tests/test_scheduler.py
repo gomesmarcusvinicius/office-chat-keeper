@@ -196,6 +196,29 @@ def test_cli_install_e_uninstall(tmp_path, monkeypatch, capsys):
     assert "intervalo" in capsys.readouterr().err
 
 
+def test_cli_install_com_nome_proprio_lembra_o_nome_na_dica(tmp_path, monkeypatch, capsys):
+    """Quando --task-name é usado, a dica de desligamento inclui o nome da tarefa.
+
+    Sem isso, quem segue a dica remove a tarefa de nome padrão e a personalizada
+    continua rodando.
+    """
+    FakeSchtasks(monkeypatch)
+    monkeypatch.setattr("office_chat_keeper.protect.restrict_to_current_user",
+                        lambda path: (True, "teste"))
+    data = tmp_path / "dados"
+
+    assert cli.main(["--data-dir", str(data), "install-task",
+                     "--task-name", "minha-tarefa"]) == 0
+    out = capsys.readouterr().out
+    assert "Para desligar: office-chat-keeper uninstall-task --task-name minha-tarefa" in out
+
+    # Com o nome padrão a dica continua simples (sem --task-name).
+    assert cli.main(["--data-dir", str(data), "install-task"]) == 0
+    out = capsys.readouterr().out
+    assert "Para desligar: office-chat-keeper uninstall-task" in out
+    assert "--task-name" not in out.split("Para desligar:")[-1]
+
+
 # ---------------------------------------------------------------- trava
 def test_trava_impede_duas_execucoes_ao_mesmo_tempo(tmp_path):
     with run_lock(tmp_path / "state") as first:
