@@ -2,6 +2,21 @@
 
 ## Ainda não lançado
 
+- **Correção importante na leitura.** Quando uma conversa grande (guardada na
+  pasta `.blob`) era regravada várias vezes, o leitor podia procurar o blob de
+  uma versão antiga, já apagado, e a conversa ficava ilegível naquele snapshot.
+  O backup seguia guardando a última versão legível, mas perdia as mensagens
+  mais novas até a próxima leitura bem-sucedida. A cópia bruta nunca foi
+  afetada. Correção em `_vendor` (ver `_vendor/README.md`), com teste.
+- `restore-snapshot`: um banco que existe só no snapshot (como
+  `claude-office-snipped-results`, que o suplemento cria sob demanda) deixa de
+  bloquear a restauração e aparece como aviso na simulação. Qualquer outra
+  diferença de esquema continua bloqueando.
+- Plano de restauração: corrige a descrição da estratégia B (`add()`, não
+  `put()`) e mostra os comandos de restauração, que já existem.
+- Restauração do banco inteiro (estratégia A) testada pela primeira vez em uso
+  real: devolveu duas conversas (Excel e PowerPoint) a um armazenamento que o
+  Office tinha recriado vazio, e o suplemento voltou a exibi-las.
 - `install-task --task-name <nome>`: a dica final de como desligar agora inclui
   o `--task-name`, com aspas quando o nome tem espaço. Antes, quem seguisse a
   dica tentava remover a tarefa de nome padrão. (Contribuição de

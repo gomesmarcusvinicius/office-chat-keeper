@@ -1,6 +1,6 @@
 # Restauração
 
-> **Experimental.** Restaurar dentro do suplemento não é suportado oficialmente e pode deixar de funcionar com uma atualização. As duas estratégias abaixo foram testadas apenas em pastas e páginas de teste, nunca no armazenamento real do Office. O caminho seguro é sempre anexar o Markdown exportado a uma conversa nova.
+> **Experimental.** Restaurar dentro do suplemento não é suportado oficialmente e pode deixar de funcionar com uma atualização. A estratégia A foi usada uma vez no armazenamento real do Office, com sucesso: as conversas voltaram e o suplemento as exibiu. A estratégia B foi testada apenas em páginas de teste. O caminho seguro é sempre anexar o Markdown exportado a uma conversa nova.
 
 A ferramenta nunca restaura sozinha. Quando detecta uma perda, ela grava um plano de restauração em modo simulação (veja "Verificação periódica" em [como-funciona.md](como-funciona.md)). As estratégias abaixo só acontecem se você as executar e confirmar.
 
@@ -35,7 +35,7 @@ por outra que já era um banco válido.
 | Office fechado | Excel, Word, PowerPoint e Outlook não podem estar em execução |
 | Banco livre | O arquivo `LOCK` precisa abrir com acesso exclusivo; se algum processo o usa, o Windows recusa |
 | Estado atual no backup | A fonte precisa estar igual ao último snapshot, já ingerido no arquivo |
-| Mesmo esquema | Bancos, versões, chaves e índices do snapshot iguais aos da fonte |
+| Mesmo esquema | Bancos, versões, chaves e índices do snapshot iguais aos da fonte. Um banco que existe só no snapshot vira aviso (o suplemento cria alguns sob demanda, e a troca o traz junto) |
 | Confirmação | Você digita `RESTAURAR <id da fonte>`; sem terminal interativo, recusa |
 
 **A troca, e por que é reversível.**
@@ -58,10 +58,13 @@ depois, restaure essa cópia (o comando exato fica em
 
 - Se o suplemento atualizou o esquema do banco depois do snapshot, a trava de
   esquema impede a estratégia A. Restam a estratégia B e o caminho seguro.
+  Exceção: um banco que existe só no snapshot (o suplemento cria alguns sob
+  demanda, como `claude-office-snipped-results`) não impede; vira aviso.
+- No uso real, o suplemento listou as conversas restauradas só a partir do
+  IndexedDB. Isso valeu para a versão do Office e do suplemento de novembro de
+  2026 e pode mudar.
 - Restaurar em uma pasta diferente da original exige `--target <id>` e pode não
   funcionar se a identidade (usuário ou organização) for outra.
-- Não se sabe se o suplemento depende de dados fora do IndexedDB para listar as
-  conversas. Só o uso real responde.
 
 ## Estratégia B: inserir só as conversas que faltam
 

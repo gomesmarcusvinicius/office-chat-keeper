@@ -35,5 +35,15 @@ tem uma nota no topo.
 - Os `__init__.py` de `ccl_chromium_reader` e de seus subpacotes estão vazios
   (o original importa módulos que não foram embutidos).
 
-Nenhuma lógica foi alterada. Para atualizar, copie de novo os arquivos da
-versão desejada, reaplique as alterações acima e rode os testes.
+E uma correção de lógica:
+
+- `ccl_chromium_indexeddb.py`, `IndexedDb.get_blob_info`: o original guardava o
+  "endereço do blob" de cada chave na ordem em que os registros aparecem nos
+  arquivos, e ficava com o último. Essa ordem não é a ordem de gravação, então
+  ele podia apontar para o blob de uma versão antiga, já apagado, e o registro
+  ficava ilegível (`FileNotFoundError`). Agora vale a versão de maior número de
+  sequência, e uma chave cuja versão mais nova foi apagada fica sem blob. Teste:
+  `test_usa_o_blob_da_versao_mais_nova_mesmo_fora_de_ordem`.
+
+Para atualizar, copie de novo os arquivos da versão desejada, reaplique as
+alterações acima e rode os testes.
