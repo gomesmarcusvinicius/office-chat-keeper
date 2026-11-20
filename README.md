@@ -78,9 +78,9 @@ uma pasta de armazenamento nova e vazia, e o histórico antigo some.
   antes da perda.
 - **Não é um produto oficial** e não tem suporte da Anthropic nem da Microsoft.
 - **A restauração dentro do suplemento não é suportada oficialmente** e pode
-  quebrar com atualizações. Ela existe, é manual e foi testada só em pastas e
-  páginas de teste (veja [docs/restauracao.md](docs/restauracao.md)). O caminho
-  seguro é anexar o Markdown exportado a uma conversa nova.
+  quebrar com atualizações. Ela existe, é manual e foi usada de verdade uma
+  única vez, com sucesso (veja [docs/restauracao.md](docs/restauracao.md)). O
+  caminho seguro é anexar o Markdown exportado a uma conversa nova.
 - **Não funciona no macOS** nem no Office na web.
 
 ## Privacidade
@@ -229,20 +229,23 @@ office-chat-keeper search --kind user --kind assistant concilia*
 
 **O que foi testado**
 
-- Um único armazenamento real, de uma única conta, no Windows 11, com o Excel.
+- Um único armazenamento real, de uma única conta, no Windows 11, com o Excel e
+  o PowerPoint.
 - Backup, arquivo permanente, exportação, busca e agendamento, em uso real
-  contínuo por alguns dias.
-- Restauração apenas em pastas e páginas de teste (inclusive com os bytes de
-  uma conversa real de cerca de 50 MB).
+  contínuo por cerca de dez dias, incluindo uma perda real de histórico: o
+  Office apagou o armazenamento e o recriou vazio, e a ferramenta avisou.
+- Restauração do banco inteiro (estratégia A) em uso real, uma vez: as duas
+  conversas voltaram e o suplemento as exibiu normalmente.
+- Restauração seletiva (estratégia B) apenas em páginas de teste (inclusive
+  com os bytes de uma conversa real de cerca de 50 MB).
 
 **O que não foi testado**
 
 - macOS (não suportado).
-- Word, PowerPoint e Outlook: os nomes internos desses apps são suposições.
+- Word e Outlook: os nomes internos desses apps são suposições.
 - Outras versões do Office e do suplemento.
 - Vários usuários ou várias contas na mesma máquina.
-- **Restauração em uso real**: não se sabe se o suplemento exibe as conversas
-  restauradas.
+- **Restauração seletiva (estratégia B) em uso real.**
 - Exportação de skills e de memória com dados reais (só com dados sintéticos).
 
 **O que é frágil**

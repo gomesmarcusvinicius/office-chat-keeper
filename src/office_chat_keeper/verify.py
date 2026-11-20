@@ -328,7 +328,7 @@ def render_restore_plan(v: Verification, cfg: Config) -> str:
     lines += [
         "", "## Estratégia B: inserir só as conversas que faltam", "",
         "Um script, executado por você nas ferramentas de desenvolvedor do painel do Claude, "
-        "grava com `put()` apenas as conversas ausentes, sem apagar nem alterar as existentes.", "",
+        "grava com `add()` apenas as conversas ausentes, sem apagar nem alterar as existentes.", "",
     ]
     insertable = [c for items in by_snapshot.values() for c in items]
     if insertable:
@@ -366,9 +366,12 @@ def render_restore_plan(v: Verification, cfg: Config) -> str:
                                             else "ainda não exportada; rode `office-chat-keeper export`"))
     lines += [
         "", "## Como executar", "",
-        "Os comandos de restauração entram nas próximas etapas da ferramenta. Até lá, use o "
-        "caminho seguro. A restauração dentro do suplemento não é suportada oficialmente e pode "
-        "deixar de funcionar com uma atualização.",
+        "- Estratégia A: `office-chat-keeper restore-snapshot <fonte>/<snapshot>` simula; "
+        "acrescente `--execute` para trocar de verdade (pede confirmação digitada).",
+        "- Estratégia B: `office-chat-keeper restore-script` gera o pacote; siga o `PASSOS.md`.",
+        "- Detalhes e limites: `docs/restauracao.md` no repositório.", "",
+        "A restauração dentro do suplemento não é suportada oficialmente e pode deixar de "
+        "funcionar com uma atualização. Na dúvida, use o caminho seguro.",
     ]
     return "\n".join(lines) + "\n"
 

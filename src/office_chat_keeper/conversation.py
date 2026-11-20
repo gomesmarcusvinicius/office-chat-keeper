@@ -42,8 +42,9 @@ CHATS_STORE = "chats"
 BLOBS_STORE = "blobs"
 KNOWN_SNAPSHOT_VERSION = 1
 
-# "surface" é o campo que diz em qual app a conversa aconteceu. Só "sheet"
-# foi confirmado em dados reais; os demais são os nomes mais prováveis e,
+# "surface" é o campo que diz em qual app a conversa aconteceu. "sheet" (Excel)
+# e "slide" (PowerPoint) foram confirmados em dados reais; os demais são os
+# nomes mais prováveis e,
 # se não baterem, o valor original é mostrado como está.
 _SURFACE_APPS = {
     "sheet": "Excel",

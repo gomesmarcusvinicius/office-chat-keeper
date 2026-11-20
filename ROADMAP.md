@@ -21,9 +21,11 @@ O estado atual, com o que foi e o que não foi testado, está em
 
 ## Depois: restauração de verdade
 
-- **Validar a restauração em uso real (ajuda).** As duas estratégias só foram
-  testadas em pastas e páginas de teste. Falta saber se o suplemento exibe as
-  conversas restauradas.
+- **Validar a restauração em mais ambientes (ajuda).** A estratégia A funcionou
+  uma vez em uso real (Excel e PowerPoint, uma conta). Falta a estratégia B em
+  uso real, e as duas em outras máquinas e versões do Office.
+- **Alertar quando um registro não puder ser lido.** Hoje isso só aparece no
+  log; foi assim que um defeito de leitura passou dias sem ser notado.
 - **Testes automatizados do script de restauração seletiva.** Hoje o
   `restore_script.js` é conferido só de forma estática.
 - **Acompanhar mudanças de esquema.** Detectar cedo quando uma atualização do

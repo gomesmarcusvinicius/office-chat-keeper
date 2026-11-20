@@ -134,6 +134,28 @@ def test_blob_ausente_vira_erro_registrado_sem_derrubar(tmp_path):
         assert len(list(reader.records("claude-chat-history", "blobs"))) == 1
 
 
+def test_usa_o_blob_da_versao_mais_nova_mesmo_fora_de_ordem(tmp_path):
+    """Regressão: com várias versões do "endereço do blob", vale a mais nova.
+
+    No banco real a ordem dos registros nos arquivos (.log e tabelas .ldb) não
+    segue a ordem de gravação. O leitor chegou a usar o endereço de uma versão
+    antiga, cujo blob o Chromium já tinha apagado, e a conversa ficava ilegível.
+    """
+    db = build_sample_storage(tmp_path, chats=[sample_chat(title="Versão antiga")])
+    old_blobs = [p for p in db.blob_dir.rglob("*") if p.is_file()]
+    db.put("claude-chat-history", "chats", CHAT_ID, sample_chat(title="Versão nova"),
+           external=True)
+    for blob in old_blobs:
+        blob.unlink()  # o Chromium apaga o blob da versão substituída
+    db.write()
+
+    with SnapshotReader(db.leveldb_dir, db.blob_dir) as reader:
+        reader._raw._fetched_records.reverse()  # versão antiga por último no arquivo
+        records = list(reader.records("claude-chat-history", "chats"))
+        assert reader.errors == []
+    assert [r.value["title"] for r in records] == ["Versão nova"]
+
+
 def test_normalize_marca_datas_como_utc():
     naive = datetime(2026, 1, 2, 3, 4, 5)
     assert normalize({"d": naive, "l": (1, 2)}) == {

@@ -1,5 +1,6 @@
-# NOTA (office-chat-keeper): cópia do arquivo original com uma única alteração,
-# descrita em _vendor/README.md: o import de ccl_simplesnappy passou a ser relativo.
+# NOTA (office-chat-keeper): cópia do arquivo original com duas alterações,
+# descritas em _vendor/README.md: o import de ccl_simplesnappy passou a ser
+# relativo, e get_blob_info passou a usar a versão mais nova de cada chave.
 """
 Copyright 2020-2024, CCL Forensics
 
@@ -658,9 +659,16 @@ class IndexedDb:
         # TODO: we should at least cache along the way to our record
         # prefix = bytes([0, db_id, store_id, 3])
         prefix = IndexedDb.make_prefix(db_id, store_id, 3)
+        # office-chat-keeper: vale só a versão MAIS NOVA (maior seq) de cada
+        # chave; a ordem nos arquivos não é a ordem de gravação.
+        newest = {}
         for record in self._fetched_records:
             if record.user_key.startswith(prefix):
                 this_raw_key = record.user_key[len(prefix):]
+                if this_raw_key not in newest or record.seq > newest[this_raw_key].seq:
+                    newest[this_raw_key] = record
+        for this_raw_key, record in newest.items():
+            if record.state == ccl_leveldb.KeyState.Live:
                 buff = io.BytesIO(record.value)
                 idx = 0
                 while buff.tell() < len(record.value):
