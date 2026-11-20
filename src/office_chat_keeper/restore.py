@@ -25,7 +25,9 @@ As travas, na ordem
 3. O banco precisa estar livre: abrimos o arquivo ``LOCK`` com acesso
    exclusivo; se qualquer processo o estiver usando, o Windows recusa.
 4. O estado atual da fonte precisa já estar no backup (snapshot + arquivo).
-5. O esquema do snapshot precisa ser igual ao da fonte.
+5. O esquema do snapshot precisa ser igual ao da fonte. Única tolerância: um
+   banco que existe só no snapshot (o suplemento cria alguns sob demanda) vira
+   aviso na simulação, porque a troca o traz junto.
 6. Você digita uma frase de confirmação.
 
 A troca, passo a passo (e por que é reversível)
@@ -191,12 +193,19 @@ def _read_schema(leveldb_dir: Path, blob_dir: Path | None) -> dict:
         return reader.schema_details()
 
 
-def schema_differences(wanted: dict, current: dict) -> list[str]:
-    """Diferenças de esquema entre o snapshot e a fonte, em frases."""
-    diffs = []
+def schema_differences(wanted: dict, current: dict) -> tuple[list[str], list[str]]:
+    """Diferenças de esquema entre o snapshot e a fonte: (impedem, só avisam).
+
+    Um banco que existe só no snapshot apenas avisa: o suplemento cria alguns
+    bancos sob demanda (um armazenamento novo ainda não os tem), e a troca leva
+    o banco inteiro do snapshot, com o esquema dele. Qualquer outra diferença
+    (versão, stores, índices, banco só na fonte) impede a restauração.
+    """
+    diffs, harmless = [], []
     for name in sorted(set(wanted) | set(current)):
         if name not in current:
-            diffs.append(f"o banco '{name}' existe no snapshot e não na fonte")
+            harmless.append(f"o banco '{name}' existe no snapshot e ainda não na fonte "
+                            "(o suplemento o cria sob demanda); ele volta junto com o snapshot")
         elif name not in wanted:
             diffs.append(f"o banco '{name}' existe na fonte e não no snapshot")
         elif wanted[name] != current[name]:
@@ -205,7 +214,7 @@ def schema_differences(wanted: dict, current: dict) -> list[str]:
                              f"{current[name].get('version')} na fonte")
             else:
                 diffs.append(f"banco '{name}': stores, chaves ou índices diferentes")
-    return diffs
+    return diffs, harmless
 
 
 # -------------------------------------------------------------------- plano
@@ -266,9 +275,10 @@ def build_plan(cfg: Config, archive: Archive, source: RestoreSource, target: Sou
             plan.present_ids = _read_chat_ids(latest.path / LEVELDB_DIR_NAME,
                                               latest.path / BLOB_DIR_NAME)
             if not problems:
-                diffs = schema_differences(
+                diffs, harmless = schema_differences(
                     _read_schema(source.leveldb, source.blob),
                     _read_schema(latest.path / LEVELDB_DIR_NAME, latest.path / BLOB_DIR_NAME))
+                plan.warnings += harmless
                 if diffs:
                     plan.blockers.append("o esquema do snapshot difere do da fonte: "
                                          + "; ".join(diffs[:4]))

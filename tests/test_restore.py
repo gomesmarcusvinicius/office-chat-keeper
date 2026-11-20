@@ -207,6 +207,40 @@ def test_bloqueia_se_o_esquema_mudou(tmp_path, monkeypatch, capsys):
     assert_blocked(e, capsys, "versão 10 no snapshot, 20 na fonte")
 
 
+def _env_com_banco_extra(tmp_path, monkeypatch, *, extra_no_snapshot: bool) -> Env:
+    """Fonte reescrita uma vez; o banco 'claude-office-snipped-results' existe só
+    no snapshot antigo (o suplemento cria esse banco sob demanda) ou só na fonte."""
+    monkeypatch.setattr("office_chat_keeper.protect.restrict_to_current_user",
+                        lambda path: (True, "teste"))
+    monkeypatch.setattr(restore, "running_office_apps", lambda: [])
+    e = Env(tmp_path)
+    monkeypatch.setattr(cli, "_ask_confirmation", lambda phrase: e.confirmations.append(phrase) or True)
+    for chats, with_extra in (([sample_chat()], extra_no_snapshot),
+                              ([sample_chat(CHAT_B)], not extra_no_snapshot)):
+        if e.folder.exists():
+            shutil.rmtree(e.folder)
+        db = build_sample_storage(e.folder, chats=chats)
+        if with_extra:
+            db.add_database("claude-office-snipped-results", ["results"])
+        db.write()
+        assert e.cli("run") == 0
+    return e
+
+
+def test_banco_a_mais_no_snapshot_so_avisa(tmp_path, monkeypatch, capsys):
+    e = _env_com_banco_extra(tmp_path, monkeypatch, extra_no_snapshot=True)
+    capsys.readouterr()
+    assert e.cli("restore-snapshot", e.spec(0)) == 0
+    out = capsys.readouterr().out
+    assert "Nenhum impedimento encontrado." in out
+    assert "AVISO: o banco 'claude-office-snipped-results' existe no snapshot" in out
+
+
+def test_banco_a_mais_na_fonte_continua_bloqueando(tmp_path, monkeypatch, capsys):
+    e = _env_com_banco_extra(tmp_path, monkeypatch, extra_no_snapshot=False)
+    assert_blocked(e, capsys, "o banco 'claude-office-snipped-results' existe na fonte e não no snapshot")
+
+
 def test_confirmacao_errada_cancela(env, capsys):
     capsys.readouterr()
     env.answer = False
