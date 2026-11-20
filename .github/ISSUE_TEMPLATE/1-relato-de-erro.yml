@@ -36,7 +36,7 @@ body:
     attributes:
       label: Versão da ferramenta
       description: Saída de `office-chat-keeper --version`.
-      placeholder: office-chat-keeper 0.1.0
+      placeholder: office-chat-keeper 0.1.1
     validations:
       required: true
   - type: input

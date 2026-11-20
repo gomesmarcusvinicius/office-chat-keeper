@@ -91,7 +91,7 @@ Para conferir, instale-a em um ambiente virtual novo:
 
 ```
 python -m venv %TEMP%\ock-teste
-%TEMP%\ock-teste\Scripts\python -m pip install --no-index dist\office_chat_keeper-0.1.0-py3-none-any.whl
+%TEMP%\ock-teste\Scripts\python -m pip install --no-index dist\office_chat_keeper-0.1.1-py3-none-any.whl
 %TEMP%\ock-teste\Scripts\office-chat-keeper --version
 ```
 
@@ -100,8 +100,10 @@ python -m venv %TEMP%\ock-teste
 1. Atualize `__version__` em `src\office_chat_keeper\__init__.py` e o
    `CHANGELOG.md`.
 2. Rode os testes e a verificação antes de publicar.
-3. Crie a **tag** (um nome fixo para um ponto do histórico): `git tag v0.1.0`
-   e `git push origin v0.1.0`.
+3. Crie a **tag** (um nome fixo para um ponto do histórico): `git tag v0.1.1`
+   e `git push origin v0.1.1`. Como a `main` exige pull request, a troca de
+   versão entra por uma branch e um PR; a tag é criada depois, no commit da
+   `main` que resultou do merge.
 4. Gere a wheel e crie a **Release** no GitHub a partir da tag, anexando a
    wheel. A Release é a página de download de uma versão.
 
