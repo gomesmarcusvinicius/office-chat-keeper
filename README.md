@@ -50,7 +50,7 @@ readable backup of that history so it is not lost again.
 Install (no Git required):
 
 ```
-py -m pip install --user https://github.com/gomesmarcusvinicius/office-chat-keeper/releases/download/v0.1.0/office_chat_keeper-0.1.0-py3-none-any.whl
+py -m pip install --user https://github.com/gomesmarcusvinicius/office-chat-keeper/releases/download/v0.1.1/office_chat_keeper-0.1.1-py3-none-any.whl
 ```
 
 ## O problema
@@ -110,12 +110,12 @@ Por padrão tudo fica em `%USERPROFILE%\ClaudeOfficeBackup`.
 ## Instalação
 
 Abra o Prompt de Comando (menu Iniciar, digite `cmd`) e use uma das formas
-abaixo. Todas instalam a versão `v0.1.0`.
+abaixo. Todas instalam a versão `v0.1.1`.
 
 **1. A mais simples (não precisa de Git):**
 
 ```
-py -m pip install --user https://github.com/gomesmarcusvinicius/office-chat-keeper/releases/download/v0.1.0/office_chat_keeper-0.1.0-py3-none-any.whl
+py -m pip install --user https://github.com/gomesmarcusvinicius/office-chat-keeper/releases/download/v0.1.1/office_chat_keeper-0.1.1-py3-none-any.whl
 ```
 
 **2. Recomendada, em ambiente isolado (pipx):**
@@ -128,13 +128,13 @@ py -m pipx ensurepath
 Feche e reabra o Prompt de Comando e então:
 
 ```
-pipx install https://github.com/gomesmarcusvinicius/office-chat-keeper/releases/download/v0.1.0/office_chat_keeper-0.1.0-py3-none-any.whl
+pipx install https://github.com/gomesmarcusvinicius/office-chat-keeper/releases/download/v0.1.1/office_chat_keeper-0.1.1-py3-none-any.whl
 ```
 
 **3. Direto do código (exige Git):**
 
 ```
-py -m pip install --user git+https://github.com/gomesmarcusvinicius/office-chat-keeper.git@v0.1.0
+py -m pip install --user git+https://github.com/gomesmarcusvinicius/office-chat-keeper.git@v0.1.1
 ```
 
 Observações:
@@ -181,6 +181,17 @@ py -m pip uninstall office-chat-keeper
 ```
 
 Desinstalar não apaga a pasta de dados; apague-a você mesmo se quiser.
+
+Para atualizar a partir de uma versão anterior, use a mesma forma da instalação:
+
+```
+py -m pip install --user --upgrade https://github.com/gomesmarcusvinicius/office-chat-keeper/releases/download/v0.1.1/office_chat_keeper-0.1.1-py3-none-any.whl
+pipx install --force https://github.com/gomesmarcusvinicius/office-chat-keeper/releases/download/v0.1.1/office_chat_keeper-0.1.1-py3-none-any.whl
+```
+
+(a primeira linha é para quem instalou com `pip`; a segunda, para quem usou o
+`pipx`). O backup automático continua ligado e passa a usar a versão nova; não
+é preciso rodar `install-task` de novo.
 
 ## Comandos
 

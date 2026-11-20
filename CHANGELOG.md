@@ -1,6 +1,9 @@
 # Histórico de versões
 
-## Ainda não lançado
+## 0.1.1
+
+Traz uma correção importante na leitura das conversas grandes: quem usa a
+0.1.0 deve atualizar.
 
 - **Correção importante na leitura.** Quando uma conversa grande (guardada na
   pasta `.blob`) era regravada várias vezes, o leitor podia procurar o blob de
