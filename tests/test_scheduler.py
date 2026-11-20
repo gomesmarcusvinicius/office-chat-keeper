@@ -212,6 +212,12 @@ def test_cli_install_com_nome_proprio_lembra_o_nome_na_dica(tmp_path, monkeypatc
     out = capsys.readouterr().out
     assert "Para desligar: office-chat-keeper uninstall-task --task-name minha-tarefa" in out
 
+    # Nome com espaço: a dica vem com aspas, para poder ser copiada e colada.
+    assert cli.main(["--data-dir", str(data), "install-task",
+                     "--task-name", "minha tarefa"]) == 0
+    out = capsys.readouterr().out
+    assert 'Para desligar: office-chat-keeper uninstall-task --task-name "minha tarefa"' in out
+
     # Com o nome padrão a dica continua simples (sem --task-name).
     assert cli.main(["--data-dir", str(data), "install-task"]) == 0
     out = capsys.readouterr().out

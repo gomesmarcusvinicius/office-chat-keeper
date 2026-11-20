@@ -2,6 +2,10 @@
 
 ## Ainda não lançado
 
+- `install-task --task-name <nome>`: a dica final de como desligar agora inclui
+  o `--task-name`, com aspas quando o nome tem espaço. Antes, quem seguisse a
+  dica tentava remover a tarefa de nome padrão. (Contribuição de
+  HarshRajSinghania, pull request 9.)
 - `--version` e o cabeçalho do `status` mostram, em uma linha, o aviso de
   projeto experimental feito por vibe coding.
 - README: observação sobre o limite de 260 caracteres do Windows na instalação

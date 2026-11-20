@@ -234,7 +234,10 @@ def cmd_install_task(cfg: Config, *, interval: int, task_name: str | None, run_n
     # usado, senão o usuário remove a tarefa errada.
     uninstall_hint = "office-chat-keeper uninstall-task"
     if result.task_name != default_task_name():
-        uninstall_hint += f" --task-name {result.task_name}"
+        # list2cmdline põe aspas quando o nome tem espaço, do jeito que o
+        # Prompt de Comando espera; assim a dica pode ser copiada e colada.
+        from subprocess import list2cmdline
+        uninstall_hint += f" --task-name {list2cmdline([result.task_name])}"
     print(f"Para desligar: {uninstall_hint}")
     log.info("tarefa agendada instalada: nome=%s intervalo=%d logon=%s sem_janela=%s",
              result.task_name, result.interval_minutes, result.logon_trigger, result.windowless)
